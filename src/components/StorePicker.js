@@ -9,7 +9,6 @@ export default class StorePicker extends Component {
 		this.props.history.push(`/stores/${storeName}`);
 	}
 
-
 	render(){
 		return(
 			<form className="store-selector" onSubmit={this.onSubmitButton.bind(this)}>
