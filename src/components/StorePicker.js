@@ -5,7 +5,6 @@ export default class StorePicker extends Component {
 	onSubmitButton(event) {
 		event.preventDefault();
 		const storeName = this.storeInput.value;
-		console.log(this.props);
 		this.props.history.push(`/stores/${storeName}`);
 	}
 
@@ -20,4 +19,10 @@ export default class StorePicker extends Component {
 		)
 	}
 }
+
+StorePicker.propTypes = {
+	history: React.PropTypes.object.isRequired
+}
+
+
 

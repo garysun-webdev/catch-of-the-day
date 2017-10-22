@@ -18,6 +18,7 @@ class App extends Component {
 		this.addFish= this.addFish.bind(this);
 		this.loadSample= this.loadSample.bind(this);
 		this.addToOrder= this.addToOrder.bind(this);
+		this.updateFish = this.updateFish.bind(this);
 	}
 
 	componentWillMount() {
@@ -26,10 +27,23 @@ class App extends Component {
 				context: this,
 				state: 'fishes'
 			});
+
+		const localStorageRef = localStorage.getItem(
+			`order-${this.props.match.params.StoreId}`);
+		if(localStorageRef){
+			this.setState({
+				order: JSON.parse(localStorageRef)
+			});
+		}
 	}
 
 	componentWillUnmount() {
 		base.removeBinding(this.ref);
+	}
+
+	componentWillUpdate(nextProps, nextState) {
+		localStorage.setItem(`order-${this.props.match.params.StoreId}`,
+		JSON.stringify(nextState.order));
 	}
 
 	addFish(fish) {
@@ -39,11 +53,30 @@ class App extends Component {
 		this.setState({fishes});
 	}
 
+	removeFish = (key) => {
+		const fishes = {...this.state.fishes};
+		fishes[key] = null;
+		this.setState({fishes});
+	}
+
+	updateFish(key, newFish) {
+		const fishes = {...this.state.fishes, [key]:newFish}
+		this.setState({
+			fishes
+		})
+	}
+
 	addToOrder(key) {
 		//deep copy
 		//if const order=this.state.order, it'll only copy the reference
 		const order = {...this.state.order};
 		order[key] = order[key] +1 || 1;
+		this.setState({ order });
+	}
+
+	removeFromOrder= (key)=>  {
+		const order = {...this.state.order};
+		delete order[key];
 		this.setState({ order });
 	}
 
@@ -66,12 +99,21 @@ class App extends Component {
 						}
 					</ul>
 				</div>
-				<Order fishes={this.state.fishes} order={this.state.order}/>
-				<Inventory addFish={this.addFish} loadSample={this.loadSample}/>
+				<Order fishes={this.state.fishes} order={this.state.order} removeFromOrder={this.removeFromOrder}/>
+				<Inventory addFish={this.addFish} loadSample={this.loadSample} 
+					fishes={this.state.fishes} updateFish={this.updateFish} 
+					removeFish={this.removeFish} storeId = {this.props.match.params.StoreId}
+				/>
 			</div>
 		)
 	}
 }
 
+App.propTypes = {
+	match: React.PropTypes.object.isRequired
+}
+
+
 export default App;
+
 

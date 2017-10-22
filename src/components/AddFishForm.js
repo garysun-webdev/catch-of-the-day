@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 export default class AddFishForm extends Component {
 	
-	onSubmitInventory(e){
+	onSubmitInventory = (e) => {
 		e.preventDefault();
 		const fish = {
 			name: this.name.value,
@@ -12,12 +12,13 @@ export default class AddFishForm extends Component {
 			image: this.image.value
 		}
 		this.props.addFish(fish);
+    	this.fishForm.reset();
 	}
 
 	render() {
 		return (
 			<div>
-				<form className="fish-edit" onSubmit={this.onSubmitInventory.bind(this)}>
+				<form className="fish-edit" ref={(input)=>{this.fishForm=input}} onSubmit={this.onSubmitInventory}>
 				<input ref={(input)=>{this.name=input}} type="text" placeholder="Fish Name" />
 				<input ref={(input)=>{this.price=input}} type="text" placeholder="Fish Price" />
 				<select ref={(input)=>{this.status=input}}>
@@ -33,3 +34,6 @@ export default class AddFishForm extends Component {
 	}
 }
 
+AddFishForm.propTypes = {
+	addFish: React.PropTypes.func.isRequired
+}
